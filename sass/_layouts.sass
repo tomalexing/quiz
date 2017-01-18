@@ -1,0 +1,53 @@
+$quiz-bg: #474E65
+
+.quiz-header
+	background: $quiz-bg
+	+r(1024)
+		display: flex
+	&__row
+		padding: 40px
+		img
+			height: 50px
+		+r(1024)
+			padding: 0 16px
+			img
+				height: 50px
+
+		.quiz-singin
+			color: white
+	&__create
+		margin-left: 10px
+		background-color: white
+		color: $quiz-bg
+		&:hover
+			color: white
+
+.login
+	&-status
+	&-details__button
+		height: 51px
+		width: 51px
+		min-width: 51px
+		border-radius: 50%
+		overflow: hidden
+		padding: 0
+		margin: 0
+		img.avatar
+			height: 41px
+			width: 41px
+			border-radius: 50%
+			overflow: hidden
+			vertical-align: middle
+	&-bubble
+		position: absolute
+		height: 0
+		overflow: hidden
+	&-bubble__active
+		height: auto
+	&-bubble__hider
+		padding: 8px 9px
+		background-color: white
+		color: #474E65
+		border-radius: 3px
+		button
+			display: block

@@ -1,0 +1,207 @@
+$quiz-bg: #474E65
+.quiz-out
+	background: $quiz-bg
+	
+.quiz-container
+	margin: 0 auto
+	max-width: 1000px
+	width: 100%
+	+r(1024)
+		padding: 0 16px
+	
+  	
+/* Stack */
+.stack ul 
+	position: relative
+	margin: 0 auto
+	padding: 0
+	list-style: none
+
+
+.stack ul li 
+	position: absolute
+	width: 100%
+	opacity: 0
+
+
+ul.stack__images 
+	width: 400px
+	height: 300px
+	z-index: 10
+	-webkit-perspective: 1000px
+	-webkit-perspective-origin: 50% -50%
+	perspective: 1000px
+	perspective-origin: 50% -50%
+
+
+@media screen and (max-height: 530px), screen and (max-width: 400px) 
+	ul.stack__images 
+		width: 260px
+		height: 195px
+	
+
+
+.stack__images li 
+	top: 0
+	z-index: 1
+	-webkit-transform: translate3d(0,0,-180px)
+	transform: translate3d(0,0,-180px)
+	-webkit-transform-style: preserve-3d
+	transform-style: preserve-3d
+
+
+.stack__images li img 
+	display: block
+	max-width: 100%
+	pointer-events: none
+
+
+.stack__images li:hover 
+	cursor: url(./../public/img/cursor_vulcan.png), auto
+
+
+.stack__images li:active 
+	cursor: -webkit-grabbing
+	cursor: grabbing
+
+
+.stack__images li.animate 
+	-webkit-transition: all 0.3s ease-out
+	transition: all 0.3s ease-out
+
+
+.stack__images li.move-back 
+	-webkit-transition-timing-function: cubic-bezier(0.175, 0.885, 0.470, 1) 
+	-webkit-transition-timing-function: cubic-bezier(0.175, 0.885, 0.470, 1.515)
+	transition-timing-function: cubic-bezier(0.175, 0.885, 0.470, 1.515)
+
+
+.stack__next 
+	border: none
+	background: none
+	display: block
+	padding: 0
+	overflow: hidden
+	width: 36px
+	height: 36px
+	margin: 10px auto 0
+	font-size: 30px
+	position: relative
+	cursor: pointer
+	color: #067ba7
+
+
+.demo-2 .stack__next 
+	color: #189824
+
+
+.stack__next:hover 
+	color: #fff
+
+
+.stack__next:focus 
+	outline: none
+
+
+.stack__next span 
+	position: absolute
+	top: 200%
+
+
+ul.stack__titles 
+	height: 18vh
+	max-width: 560px
+	width: 95%
+
+
+.stack__titles blockquote 
+	margin: 0
+	text-align: center
+	font-size: 1.4em
+
+
+.stack__titles blockquote footer 
+	font-size: 50%
+	padding-bottom: 1em
+	font-family: 'Montserrat', Arial, sans-serif
+
+
+.stack__titles li 
+	pointer-events: none
+	-webkit-transition: opacity 0.45s ease
+	transition: opacity 0.45s ease
+
+
+.stack__titles li.current 
+	opacity: 1
+	pointer-events: auto
+
+
+.quiz
+	&-cart
+		z-index: 100
+		position: relative
+		margin: auto
+		border-radius: 8px
+		overflow: hidden
+		max-width: 750px
+		height: auto
+		overflow: hidden
+	&-cart__title
+		padding: 10px 15px
+		font-size: 26px
+		color: white
+		background: #FC3868
+	&-cart__questions
+		display: flex
+		flex-wrap: nowrap
+		flex-direction: row
+		background-color: white
+	&-cart__questions-in
+		flex: 0 1 auto
+		margin: 38px
+		border-radius: 8px
+		overflow: hidden
+		img
+		
+			vertical-align: middle
+			overflow: hidden
+			object-fit: cover
+	&-cart__questions-between
+		flex: 1 0 auto
+	&-cart__social
+		background-color: white 
+		padding-bottom: 32px
+	&-cart__social-in
+		display: flex
+		flex-direction: row
+		flex-wrap: nowrap
+		align-items: center
+		justify-content: flex-end
+		margin: 0 22px
+	&-social__btn
+		min-width: 131px
+		height: 40px
+		border-radius: 20px
+		margin-right: 16px
+		+tr(box-shadow .5s)
+		a
+			display: block
+			line-height: 42px
+			text-transform: uppercase
+			text-decoration: none
+			color: white
+			padding: 0 18px
+		svg
+			margin: -3px 10px 0 0
+		&:hover
+			box-shadow: 0 2px 20px rgba(0,0,0,.5)
+		&:active
+			box-shadow: 0 2px 20px rgba(0,0,0,.3)
+	
+	&-social__btn-tw
+		background: #009EF6
+	&-social__btn-fb
+		background: #3645AF		
+		
+		
