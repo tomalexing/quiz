@@ -6,29 +6,45 @@ class Cart extends React.Component {
 
     constructor(props) {
         super(props);
-        this.chooseCart = this.chooseCart.bind(this);
+        this.pickCart = this.pickCart.bind(this);
         this.url = window.location.href;
         this.state = {
             activeLeft: false,
-            activeRight: false,
+            activeRight: false
         };
     }
 
+    classRegex(classname){
+        return new RegExp("(^|\\s+)" + classname + "(\\s+|$)");
+    }
+    hasClass(el, c) {
+          return  this.classRegex(c).test( el.className );
+    }
+    addClass(el, c) {
+        if (!this.hasClass(el, c))
+        el.className =  el.className + " " + c;
+    }
+    removeClass(el, c) {
+        el.className = el.className.replace(this.classRegex(c), ' ')
+    }
 
-	chooseCart(event){
-        let d
-        var cart =  event.currentTarget
+
+	pickCart(event){
+        let d, x, y
+        let cart =  event.currentTarget
+        let {height, width, left, top} = cart.getBoundingClientRect()
         var ink = cart.querySelector('.ink')
-        
         if(!ink.style.height && !ink.style.width){
-            d = Math.max(cart.clientHeight, cart.clientWidth)
-            ink = {clientHeight: d, clientWidth: d}
+            d = Math.max(height, width)
+            ink.setAttribute("style", `height: ${d}px; width: ${d}px`);
         }
+        x = event.pageX - left - width/2
+        y = event.pageY - top - height/2
         
-        x = e.pageX - $(this).offset().left - ink.width()/2;
-        y = e.pageY - $(this).offset().top - ink.height()/2;
+        ink.setAttribute("style", `${ink.getAttribute("style")}; left: ${x}px; top: ${y}px`);
+        this.addClass(ink, "animated")
+        setTimeout( (()=>{this.removeClass(ink, "animated")}).bind(this), 1000);
         
-        ink.css({top: y+'px', left: x+'px'}).addClass("animate");
     }
 
     render() {
@@ -41,8 +57,8 @@ class Cart extends React.Component {
                 {question}
             </div>
             <div className="quiz-cart__questions ">
-                <div id="quiz-cart__questions-left" className={leftCartClasses}  onClick={this.chooseCart} > 
-                    <span className='ink'></span>
+                <div id="quiz-cart__questions-left" className={leftCartClasses}  onClick={this.pickCart} > 
+                    <span  className='ink'></span>
                     <img height="240" width="300" src={q1.srcImg} /> 
                 </div>
                 <div className="quiz-cart__questions-between "> </div>
