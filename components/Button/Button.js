@@ -42,7 +42,6 @@ class Button extends React.Component {
   render() {
     const { component, type, className, colored, to, href,
       primary, accent, ripple, children, ...other } = this.props;
-      console.log(component);
     return React.createElement(
       component || (to ? Link : (href ? 'a' : 'button')), // eslint-disable-line no-nested-ternary
       {

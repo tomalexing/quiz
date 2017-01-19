@@ -160,10 +160,12 @@ ul.stack__titles
 	&-cart__questions-in
 		flex: 0 1 auto
 		margin: 38px
+		z-index: 2
 		border-radius: 8px
 		position: relative
 		overflow: hidden
 		transition: all 0.2s ease
+		cursor: url(../public/img/cursor_vulcan.png), auto
 		img
 			vertical-align: middle
 			overflow: hidden
@@ -173,24 +175,82 @@ ul.stack__titles
 			display: block
 			position: absolute
 			z-index: 10
-			background: rgba(255, 255, 255, 0.3)
+			background: rgba(#FC3868, 0.7)
 			transform: scale(0)
 			border-radius: 100%
-			&.animated	
-        		animation: ripple 0.65s linear
+			&.animated
+        		animation: ripple 0.65s linear forwards
+
+
+	&-cart__questions__inner
+		display: block
+		position: absolute
+		left: 0
+		top: 0
+		bottom: 0
+		right: 0
+		z-index: -1
+		opacity: 0
+		+tr(opacity 0.3s)
+		&.is__picked
+			z-index: 15
+			background: rgba(#FC3868, 0.7)
+			opacity: 1
+		
+		&.is__show
+			z-index: 15
+			background: transparent
+			opacity: 1
+			+tr(opacity 0s)
+		
+		&-score
+		&-score__pers__cover
+			text-align: center
+			color: white
+			font: normal 100 60px/1.4 Roboto
+		&-score__pers
+			display: inline-block
+			font-size: 95px
+   			margin-right: -15px
+		&-score__progress
+			position: relative
+			width: 80%
+			height: 2px
+			margin: -10px auto 0
+			background: rgba(white,.3)
+			.progress
+				position: absolute
+				left: 0
+				top: 0
+				height: 2px
+				appearance: none
+				background: rgba(white,.7)
+		&-score__number
+			text-align: center
+			color: white
+			margin-top: 16px
+			font-size: 18px 
+		&-value
+			position: absolute
+			bottom: 10px	
+			left: 0
+			right: 0
+			height: auto
+			text-align: center
+			color: white
 
 	&-cart__questions-between
 		flex: 1 0 auto
 	&-cart__social
 		background-color: white 
 		padding-bottom: 32px
-	&-cart__social-in
-		display: flex
-		flex-direction: row
-		flex-wrap: nowrap
-		align-items: center
-		justify-content: flex-end
-		margin: 0 22px
+		&-in
+			display: flex
+			flex-direction: row
+			flex-wrap: nowrap
+			align-items: center
+			justify-content: flex-end
+			margin: 0 22px
 	&-social__btn
 		min-width: 131px
 		height: 40px
