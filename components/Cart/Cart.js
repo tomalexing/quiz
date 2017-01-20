@@ -1,6 +1,8 @@
 import React, { PropTypes } from 'react';
 import Button from '../../components/Button';
 import cx from 'classnames';
+import cookie from 'react-cookie';
+import firebase from "firebase";
 
 class Cart extends React.Component {
 
@@ -9,15 +11,52 @@ class Cart extends React.Component {
         this.pickCart = this.pickCart.bind(this);
         this.pickCart1 = this.pickCart1.bind(this);
         this.pickCart2 = this.pickCart2.bind(this);
-        this.url = window.location.href;
+        this.url = window.location.href;    
+        let alreadyChecked =  this._checkCookie()
         this.state = {
             activeLeft: false,
             activeRight: false,
             quantity1: 0,
             quantity2: 0,
-            cartIsChoosedLeft: false,
-            cartIsChoosedRight: false
+            cartIsChoosedLeft: false || alreadyChecked.left,
+            cartIsChoosedRight: false || alreadyChecked.right
         };
+        
+    }
+    _writeNewQuantity(side, dec) {
+        const dbRef = firebase.database().ref()
+        var changeVal  = 1; //increase on 1 
+        if(dec == 'dec') changeVal = -1; //decrease on 1 
+        if(side == 'left') var side = 0; // 
+        if(side == 'right') var side = 1;
+       // this.state.cartIsChoosedLeft
+       // this.state.cartIsChoosedRight
+        let _self = this
+        var updates = {}
+        dbRef.child(`quiz/${_self.props.quiz.cartId}`).once('value', function(q) {
+  
+            dbRef.child(`quiz/${_self.props.quiz.cartId}/answers/${Object.keys(q.val()['answers']).side}`).once('value', function(qw) {
+          
+                  updates[`quiz/${_self.props.quiz.cartId}/answers/${Object.keys(q.val()['answers']).side}`] =  qw.val()['value'] + changeVal;
+                  firebase.database().ref().update(updates);
+
+            });
+        });
+    }
+
+    _checkCookie(){
+        let cObj = cookie.select(new RegExp(`cartIsChoosed-${this.props.quiz.cartId}`))
+        if( Object.values(cObj).length > 0 &&  Object.values(cObj)[0] != "" ){
+            let val = Object.values(cObj)[0]
+                return {
+                    left: val.trim() == "Left",
+                    right: val.trim() == "Right"
+                }
+        }
+        return {
+            left: false,
+            right: false
+        }
     }
 
     classRegex(classname) {
@@ -112,12 +151,15 @@ class Cart extends React.Component {
                     quantity1: this.state.quantity1 + 1,
                     quantity2: (this.state.cartIsChoosedRight) ? this.state.quantity2 - 1 : this.state.quantity2,
                 })
+            this.setState({
+                cartIsChoosedLeft: true,
+                 cartIsChoosedRight: false,
+            })
+            
+
               setTimeout((() => {
-                this.setState({
-                    cartIsChoosedLeft: true,
-                    cartIsChoosedRight: false,
-                })
-            }).bind(this), 1000);
+                  this._writeNewQuantity('left');
+                }).bind(this), 1000);
         }
 
     }
@@ -128,12 +170,13 @@ class Cart extends React.Component {
                     quantity2: this.state.quantity2 + 1,
                     quantity1: (this.state.cartIsChoosedLeft) ? this.state.quantity1 - 1 : this.state.quantity1,
                 })
-              setTimeout((() => {
-                this.setState({
+               this.setState({
                     cartIsChoosedLeft: false,
                     cartIsChoosedRight: true,
                 })
-            }).bind(this), 1000);
+              setTimeout((() => {
+                    this._writeNewQuantity('right');
+                }).bind(this), 1000);
         }
     }
     componentWillMount() {
@@ -146,12 +189,16 @@ class Cart extends React.Component {
     render() {
         var {question, q1, q2, } = this.props.quiz
 
-        var per1 = this.state.quantity1 * 100 / (this.state.quantity1 + this.state.quantity2);
-        var per2 = this.state.quantity2 * 100/ (this.state.quantity1 + this.state.quantity2);
+        var per1 = this.state.quantity1 * 100 / (this.state.quantity1 + this.state.quantity2)
+        var per2 = this.state.quantity2 * 100/ (this.state.quantity1 + this.state.quantity2)
 
 
-        let leftCartClasses = cx('quiz-cart__questions-in', { animate: this.state.activeLeft });
-        let rightCartClasses = cx('quiz-cart__questions-in ', { animate: this.state.activeRight });
+        let leftCartClasses = cx('quiz-cart__questions-in', { animate: this.state.activeLeft })
+        let rightCartClasses = cx('quiz-cart__questions-in ', { animate: this.state.activeRight })
+
+        cookie.save(`cartIsChoosed-${this.props.quiz.cartId}`, this.state.cartIsChoosedLeft ? `Left`: 
+        this.state.cartIsChoosedRight ? `Right`  : '',  { path: '/' })
+
 
         return (<div className="quiz-cart ">
             <div className="quiz-cart__title ">
