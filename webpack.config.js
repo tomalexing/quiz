@@ -100,7 +100,7 @@ const config = {
         loader: `babel-loader?${JSON.stringify(babelConfig)}`,
       },
       {
-        test: /\.sass$/,
+        test: /\.sass$|.scss$/,
         loaders: [
           'style-loader',
           `css-loader?${JSON.stringify({ sourceMap: isDebug, minimize: !isDebug })}`,

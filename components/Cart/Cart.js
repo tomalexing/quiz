@@ -3,6 +3,7 @@ import Button from '../../components/Button';
 import cx from 'classnames';
 import cookie from 'react-cookie';
 import firebase from "firebase";
+import store from "./../../core/store"
 
 class Cart extends React.Component {
 
@@ -11,36 +12,43 @@ class Cart extends React.Component {
         this.pickCart = this.pickCart.bind(this);
         this.pickCart1 = this.pickCart1.bind(this);
         this.pickCart2 = this.pickCart2.bind(this);
-        this.url = window.location.href;    
-        let alreadyChecked =  this._checkCookie()
+        this.url = window.location.href
+        this.pathToCarts = firebase.database().ref(`quiz/${this.props.quiz.cartId}/answers`)    
+        this.dbRef = firebase.database().ref()
+        let alreadyChecked  =  this._checkCookie()
+        this._retreiveCartsUID(this.dbRef) // this.leftCartUID  
+                                //  this.rightCartUID
         this.state = {
             activeLeft: false,
-            activeRight: false,
+            activeRight: false, 
             quantity1: 0,
             quantity2: 0,
             cartIsChoosedLeft: false || alreadyChecked.left,
             cartIsChoosedRight: false || alreadyChecked.right
         };
+
+        this.firstTimeIsDone = true
         
     }
-    _writeNewQuantity(side, dec) {
-        const dbRef = firebase.database().ref()
-        var changeVal  = 1; //increase on 1 
-        if(dec == 'dec') changeVal = -1; //decrease on 1 
-        if(side == 'left') var side = 0; // 
-        if(side == 'right') var side = 1;
-       // this.state.cartIsChoosedLeft
-       // this.state.cartIsChoosedRight
+    _retreiveCartsUID(dbRef) {
         let _self = this
+        window.that = this
         var updates = {}
-        dbRef.child(`quiz/${_self.props.quiz.cartId}`).once('value', function(q) {
-  
-            dbRef.child(`quiz/${_self.props.quiz.cartId}/answers/${Object.keys(q.val()['answers']).side}`).once('value', function(qw) {
-          
-                  updates[`quiz/${_self.props.quiz.cartId}/answers/${Object.keys(q.val()['answers']).side}`] =  qw.val()['value'] + changeVal;
-                  firebase.database().ref().update(updates);
-
-            });
+        dbRef.child(`quiz/${_self.props.quiz.cartId}`).once('value', function (q) {
+                _self.leftCartUID = Object.keys(q.val()['answers'])[0];
+                _self.rightCartUID = Object.keys(q.val()['answers'])[1];
+                console.log(_self.leftCartUID)
+        });
+    }
+    _vote(postRef, uid, inc) {
+        postRef.transaction(function(post) {
+            if (post && post[uid] && inc === "inc") {
+                post[uid]['quantity']++;
+            }
+                if (post && post[uid] && inc === "dec") {
+                post[uid]['quantity']--;
+            }
+            return post;
         });
     }
 
@@ -145,26 +153,31 @@ class Cart extends React.Component {
     }
     pickCart1(e) {
 
-        if(!this.state.cartIsChoosedLeft) {
+        if(!this.state.cartIsChoosedLeft && this.leftCartUID) {
             this.pickCart(e);
             this.setState({
-                    quantity1: this.state.quantity1 + 1,
-                    quantity2: (this.state.cartIsChoosedRight) ? this.state.quantity2 - 1 : this.state.quantity2,
-                })
+                quantity1: this.state.quantity1 + 1,
+                quantity2: (this.state.cartIsChoosedRight) ? this.state.quantity2 - 1 : this.state.quantity2,
+            })
             this.setState({
                 cartIsChoosedLeft: true,
-                 cartIsChoosedRight: false,
+                cartIsChoosedRight: false,
             })
-            
+
+            this._vote(this.pathToCarts,this.leftCartUID,'inc')
+            if(this.state.cartIsChoosedRight){
+                this._vote(this.pathToCarts,this.rightCartUID,'dec')
+            }
+
 
               setTimeout((() => {
-                  this._writeNewQuantity('left');
+                  
                 }).bind(this), 1000);
         }
 
     }
     pickCart2(e) {
-        if(!this.state.cartIsChoosedRight) {
+        if(!this.state.cartIsChoosedRight && this.rightCartUID) {
             this.pickCart(e);
                this.setState({
                     quantity2: this.state.quantity2 + 1,
@@ -174,8 +187,13 @@ class Cart extends React.Component {
                     cartIsChoosedLeft: false,
                     cartIsChoosedRight: true,
                 })
+
+               this._vote(this.pathToCarts, this.rightCartUID, 'inc')
+               if (this.state.cartIsChoosedLeft) {
+                   this._vote(this.pathToCarts, this.leftCartUID, 'dec')
+               }
               setTimeout((() => {
-                    this._writeNewQuantity('right');
+                   
                 }).bind(this), 1000);
         }
     }
@@ -186,6 +204,15 @@ class Cart extends React.Component {
             quantity2: q2.quantity
         })
     }
+    componentDidMount() {
+        if(this.firstTimeIsDone){
+            store.dispatch({
+              type: 'LOADED'
+            });
+            this.firstTimeIsDone = false
+        }
+    }
+     
     render() {
         var {question, q1, q2, } = this.props.quiz
 

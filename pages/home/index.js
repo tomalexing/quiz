@@ -15,6 +15,10 @@ import Button from '../../components/Button';
 import Link from '../../components/Link';
 import Cart from "../../components/Cart";
 import firebase from "firebase";
+import SS from "react-slick"
+import store from "./../../core/store"
+
+
 class HomePage extends React.Component {
 
   static propTypes = {
@@ -24,10 +28,13 @@ class HomePage extends React.Component {
 
   constructor(props) {
     super(props);
-    window.firebase = firebase; 
-    this.state ={
-      quiz: null
+    window.firebase = firebase
+    this.state = {
+      quiz: null,
+      initSlider: false
     }
+    this.numberOfQuiz = -1
+    store.subscribe(this._checkForSlider.bind(this))
   }
 
   shuffle(array) {
@@ -54,12 +61,19 @@ class HomePage extends React.Component {
     const dbRef = firebase.database().ref()
     let quizObj = {};
     dbRef.child('quiz').limitToLast(10).once("value").then((quiz) => {
-        return quiz.val();
-      }).then((quiz, err ) => {
-      if( quiz ) this.setState({quiz: quiz});
-      if( err ) console.log(err);
-     
+      return quiz.val();
+    }).then((quiz, err) => {
+      if (quiz){ 
+        this.setState({ quiz: quiz });
+        this.numberOfQuiz  = Object.keys(quiz).length
+      }
+
+      if (err) console.log(err);
+
     })
+
+
+                
 
   }
 
@@ -68,6 +82,15 @@ class HomePage extends React.Component {
   }
 
 
+
+
+  _checkForSlider () {
+      console.log(store.getState().loaded)
+       this.setState({
+         initSlider: (this.numberOfQuiz == store.getState().loaded) ? true : false
+      });
+
+  }
 
   render() {
     var quizTest = {
@@ -81,30 +104,47 @@ class HomePage extends React.Component {
         quantity: 2,
         srcImg: "img/2.png",
         value: "asdasd"
-      }
+      },
+      cartId: '-KPs0qRtYWworeGt1WD-'
     }
-
+    const sliderConfig = {
+      dots: true,
+      fade: true,
+      infinite: false,
+      speed: 500,
+      slidesToShow: 1,
+      slidesToScroll: 1
+    }
     return (
       <Layout className={"quiz-container"}>
 
         <div className="quiz">
-          { 
-            (this.state.quiz)  
-            ? 
-            this.shuffle(Object.keys(this.state.quiz)).map((q, i) => {
-              window.that = this;
-                return  <Cart key={q} quiz={{
-                  question : this.state.quiz[q]['question'],
-                  q1 : Object.values(this.state.quiz[q]['answers'])[0],
-                  q2: Object.values(this.state.quiz[q]['answers'])[1],
-                  cartId: q
-                }} />
-              })
-            : 
-            <div>Downloading</div>
+          {
+            (this.state.quiz)
+              ?
+              //<SS {...sliderConfig} > {
+                this.shuffle(Object.keys(this.state.quiz)).map((q, index) => {
+                  window.that = this;
+                  return <div data-index={index}  key={index}><Cart key={q} quiz={{
+                    question: this.state.quiz[q]['question'],
+                    q1: Object.values(this.state.quiz[q]['answers'])[0],
+                    q2: Object.values(this.state.quiz[q]['answers'])[1],
+                    cartId: q
+                  }} /></div>
+                })
+              //}</SS>
+              :
+              <SS {...sliderConfig}>
+                <div><Cart quiz={quizTest}/></div>
+                <div><Cart quiz={quizTest}/></div>
+                <div><Cart quiz={quizTest}/></div>
+                <div><Cart quiz={quizTest}/></div>
+                <div><Cart quiz={quizTest}/></div>
+              </SS>
           }
+
         </div>
- 
+
         <Button ref={(left) => { this.left = left; } } className="leftleft" type={'fab'} primary={true}> <i className="material-icons ">chevron_left</i></Button>
         <Button type={'fab'} primary={true} > <i className="material-icons">chevron_right</i></Button>
 
