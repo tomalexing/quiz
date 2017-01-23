@@ -17,7 +17,7 @@ import Cart from "../../components/Cart";
 import firebase from "firebase";
 import SS from "react-slick"
 import store from "./../../core/store"
-
+import {addClass, removeClass} from  "./../../core/helper"
 
 class HomePage extends React.Component {
 
@@ -34,7 +34,7 @@ class HomePage extends React.Component {
       initSlider: false
     }
     this.numberOfQuiz = -1
-    store.subscribe(this._checkForSlider.bind(this))
+  
   }
 
   shuffle(array) {
@@ -63,9 +63,9 @@ class HomePage extends React.Component {
     dbRef.child('quiz').limitToLast(10).once("value").then((quiz) => {
       return quiz.val();
     }).then((quiz, err) => {
-      if (quiz){ 
+      if (quiz) {
         this.setState({ quiz: quiz });
-        this.numberOfQuiz  = Object.keys(quiz).length
+        this.numberOfQuiz = Object.keys(quiz).length
       }
 
       if (err) console.log(err);
@@ -73,9 +73,15 @@ class HomePage extends React.Component {
     })
 
 
-                
-
   }
+
+  animateOut(prev, next){
+    let prevNode = document.querySelector(`.slick-slide[data-index='${prev}']`)
+    let allNde = document.querySelectorAll(`.slick-slide`)
+    setTimeout(()=>Array.from(allNde).map( node => removeClass(node, "prev")),0)
+    setTimeout(()=>addClass(prevNode, "prev"),0)
+  }
+  
 
   componentDidMount() {
     document.title = title
@@ -84,13 +90,16 @@ class HomePage extends React.Component {
 
 
 
-  _checkForSlider () {
-      console.log(store.getState().loaded)
-       this.setState({
-         initSlider: (this.numberOfQuiz == store.getState().loaded) ? true : false
-      });
+ get leftArrow() {
+    return React.createElement(Button, {type: 'fab', primary: true}, <i className="material-icons ">chevron_left</i>);
+}
 
-  }
+
+
+ get rigthArrow() {
+       return React.createElement(Button, {type: 'fab', primary: true}, <i className="material-icons ">chevron_right</i>);
+}
+
 
   render() {
     var quizTest = {
@@ -108,13 +117,20 @@ class HomePage extends React.Component {
       cartId: '-KPs0qRtYWworeGt1WD-'
     }
     const sliderConfig = {
-      dots: true,
+      dots: false,
+      lazyLoad: false,
       fade: true,
-      infinite: false,
-      speed: 500,
+      infinite: true,
       slidesToShow: 1,
-      slidesToScroll: 1
+      slidesToScroll: 1,
+      centerMode: false,
+      swipe: false,
+      nextArrow: this.rigthArrow,
+      prevArrow: this.leftArrow,
+      beforeChange: this.animateOut,
+      speed: 1000
     }
+  
     return (
       <Layout className={"quiz-container"}>
 
@@ -122,31 +138,28 @@ class HomePage extends React.Component {
           {
             (this.state.quiz)
               ?
-              //<SS {...sliderConfig} > {
+              <SS {...sliderConfig} >{
                 this.shuffle(Object.keys(this.state.quiz)).map((q, index) => {
                   window.that = this;
-                  return <div data-index={index}  key={index}><Cart key={q} quiz={{
+                  return <div data-index={index} key={index}><Cart key={q}  quiz={{
                     question: this.state.quiz[q]['question'],
                     q1: Object.values(this.state.quiz[q]['answers'])[0],
                     q2: Object.values(this.state.quiz[q]['answers'])[1],
-                    cartId: q
+                    cartId: q,
+                    leftCartUID: Object.entries(that.state.quiz[q]['answers'])[0][0],
+                    rightCartUID: Object.entries(that.state.quiz[q]['answers'])[1][0]
                   }} /></div>
                 })
-              //}</SS>
+              }</SS>
               :
-              <SS {...sliderConfig}>
-                <div><Cart quiz={quizTest}/></div>
-                <div><Cart quiz={quizTest}/></div>
-                <div><Cart quiz={quizTest}/></div>
-                <div><Cart quiz={quizTest}/></div>
-                <div><Cart quiz={quizTest}/></div>
-              </SS>
+              <div className="preloading__cart">
+                <img src={'./img/preview.png'}/>
+                  <span>downloading...</span>
+              </div> 
+            
           }
 
         </div>
-
-        <Button ref={(left) => { this.left = left; } } className="leftleft" type={'fab'} primary={true}> <i className="material-icons ">chevron_left</i></Button>
-        <Button type={'fab'} primary={true} > <i className="material-icons">chevron_right</i></Button>
 
       </Layout>
     );
