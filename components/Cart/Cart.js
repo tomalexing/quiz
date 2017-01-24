@@ -4,7 +4,7 @@ import cx from 'classnames';
 import cookie from 'react-cookie';
 import firebase from "firebase";
 import store from "./../../core/store"
-import {addClass, removeClass} from  "./../../core/helper"
+import { addClass, removeClass } from "./../../core/helper"
 
 class Cart extends React.Component {
 
@@ -14,43 +14,43 @@ class Cart extends React.Component {
         this.pickCart1 = this.pickCart1.bind(this);
         this.pickCart2 = this.pickCart2.bind(this);
         this.url = window.location.href
-        this.pathToCarts = firebase.database().ref(`quiz/${this.props.quiz.cartId}/answers`)    
+        this.pathToCarts = firebase.database().ref(`quiz/${this.props.quiz.cartId}/answers`)
         this.dbRef = firebase.database().ref()
-        let alreadyChecked  =  this._checkCookie()
-        this.leftCartUID  = this.props.quiz.leftCartUID
-        this.rightCartUID = this.props.quiz.rightCartUID 
+        let alreadyChecked = this._checkCookie()
+        this.leftCartUID = this.props.quiz.leftCartUID
+        this.rightCartUID = this.props.quiz.rightCartUID
 
         this.state = {
             activeLeft: false,
-            activeRight: false, 
+            activeRight: false,
             quantity1: 0,
             quantity2: 0,
             cartIsChoosedLeft: false || alreadyChecked.left,
             cartIsChoosedRight: false || alreadyChecked.right
         };
- 
+
     }
- 
+
     _vote(postRef, uid, inc) {
-        postRef.transaction(function(post) {
+        postRef.transaction(function (post) {
             if (post && post[uid] && inc === "inc") {
                 post[uid]['quantity']++;
             }
-                if (post && post[uid] && inc === "dec") {
+            if (post && post[uid] && inc === "dec") {
                 post[uid]['quantity']--;
             }
             return post;
         });
     }
 
-    _checkCookie(){
+    _checkCookie() {
         let cObj = cookie.select(new RegExp(`cartIsChoosed-${this.props.quiz.cartId}`))
-        if( Object.values(cObj).length > 0 &&  Object.values(cObj)[0] != "" ){
+        if (Object.values(cObj).length > 0 && Object.values(cObj)[0] != "") {
             let val = Object.values(cObj)[0]
-                return {
-                    left: val.trim() == "Left",
-                    right: val.trim() == "Right"
-                }
+            return {
+                left: val.trim() == "Left",
+                right: val.trim() == "Right"
+            }
         }
         return {
             left: false,
@@ -59,14 +59,14 @@ class Cart extends React.Component {
     }
 
 
-    asyncLoop(o){
-        var i=-1;
+    asyncLoop(o) {
+        var i = -1;
 
-        var loop = function(){
+        var loop = function () {
             i++;
-            if(i==o.length){o.callback(); return;}
+            if (i == o.length) { o.callback(); return; }
             o.functionToLoop(loop, i);
-        } 
+        }
         loop();//init
     }
 
@@ -80,7 +80,10 @@ class Cart extends React.Component {
         var progress = cart.querySelector('.progress');
 
         var step = 50
+        var  anotherCart = (cart === this.clickInputLeft) ? this.clickInputRight : this.clickInputLeft
 
+        addClass(this.rightNode, 'blackout')
+        addClass(this.leftNode, 'blackout')
 
         if (!ink.style.height && !ink.style.width) {
             d = Math.max(height, width)
@@ -97,41 +100,69 @@ class Cart extends React.Component {
         }
 
         addClass(ink, "animated")
-
-        setTimeout((() => {
+        
+        setTimeout((() => {   // animate  cart
             removeClass(ink, "animated");
+            removeClass(this.rightNode, 'blackout') 
+            removeClass(this.leftNode, 'blackout')
 
 
             var persHtml = cart.querySelector('.quiz-cart__questions__inner-score__pers')
             var pers = cart.querySelector('.quiz-cart__questions__inner-score__pers').innerText
             var valHtml = cart.querySelector('.quiz-cart__questions__inner-score__number')
             var val = cart.querySelector('.quiz-cart__questions__inner-score__number').innerText
-           
-            var persValue = pers.slice(0,pers.indexOf('.')>0?pers.indexOf('.'):pers.lenght)
-            persValue = +persValue/step
 
-            var numVal =  +val/step
+            var persValue = pers.slice(0, pers.indexOf('.') > 0 ? pers.indexOf('.') : pers.lenght)
+            persValue = +persValue / step
 
+            var numVal = +val / step
+            var _self = this
             this.asyncLoop({
-                    length : step,
-                    functionToLoop : function(loop, i){
-                        setTimeout(function(){
-                            (i != step-1) ? progress.setAttribute("style", `width: ${persValue * i}%;`) :progress.setAttribute("style", `width: ${~~pers }%;`);
-                            (i != step-1) ? persHtml.innerText = ~~(persValue * i) : persHtml.innerText = ~~pers;
-                            (i != step-1) ? valHtml.innerText = ~~(numVal * i) : valHtml.innerText = val;
-                            loop();
-                        },10);
-                    },
-                    callback : function(){
-                        
-                    }    
-                });
+                length: step,
+                functionToLoop: function (loop, i) {
+                    setTimeout(function () {
+                        (i != step - 1) ? progress.setAttribute("style", `width: ${persValue * i}%;`) : progress.setAttribute("style", `width: ${~~pers}%;`);
+                        (i != step - 1) ? persHtml.innerText = ~~(persValue * i) : persHtml.innerText = ~~pers;
+                        (i != step - 1) ? valHtml.innerText = ~~(numVal * i) : valHtml.innerText = val;
+                        loop();
+                    }, 10);
+                },
+                callback: function () {  // animate another cart
+
+        
+                    var anotherProgress = anotherCart.querySelector('.progress')
+                    var anotherPers = anotherCart.querySelector('.quiz-cart__questions__inner-score__pers').innerText
+                    var anotherPersHtml = anotherCart.querySelector('.quiz-cart__questions__inner-score__pers')
+                    var anotherValHtml = anotherCart.querySelector('.quiz-cart__questions__inner-score__number')
+                    var anotherVal = anotherCart.querySelector('.quiz-cart__questions__inner-score__number').innerText
+
+
+                    var anotherPersValue = anotherPers.slice(0, anotherPers.indexOf('.') > 0 ? anotherPers.indexOf('.') : anotherPers.lenght)
+                    anotherPersValue = +anotherPersValue / step
+                    var anotherNumVal = +anotherVal / step
+
+                    _self.asyncLoop({
+                        length: step,
+                        functionToLoop: function (loop, i) {
+                            setTimeout(function () {
+                                (i != step - 1) ? anotherProgress.setAttribute("style", `width: ${anotherPersValue * i}%;`) : anotherProgress.setAttribute("style", `width: ${~~anotherPers}%;`);
+                                (i != step - 1) ? anotherPersHtml.innerText = ~~(anotherPersValue * i) : anotherPersHtml.innerText = ~~anotherPers;
+                                (i != step - 1) ? anotherValHtml.innerText = ~~(anotherNumVal * i) : anotherValHtml.innerText = anotherVal;
+                                loop();
+                            }, 10);
+                        },
+                        callback: function () {
+
+                        }
+                    });
+                }
+            });
         }).bind(this), 1000);
 
     }
     pickCart1(e) {
 
-        if(!this.state.cartIsChoosedLeft) {
+        if (!this.state.cartIsChoosedLeft) {
             this.pickCart(e);
             this.setState({
                 quantity1: this.state.quantity1 + 1,
@@ -142,31 +173,33 @@ class Cart extends React.Component {
                 cartIsChoosedRight: false,
             })
 
-            this._vote(this.pathToCarts,this.leftCartUID,'inc')
-            if(this.state.cartIsChoosedRight){
-                this._vote(this.pathToCarts,this.rightCartUID,'dec')
+            this._vote(this.pathToCarts, this.leftCartUID, 'inc')
+            if (this.state.cartIsChoosedRight) {
+                this._vote(this.pathToCarts, this.rightCartUID, 'dec')
             }
 
 
-           
+
         }
 
     }
     pickCart2(e) {
-        if(!this.state.cartIsChoosedRight ) {
-            this.pickCart(e);
-               this.setState({
-                    quantity2: this.state.quantity2 + 1,
-                    quantity1: (this.state.cartIsChoosedLeft) ? this.state.quantity1 - 1 : this.state.quantity1,
-                    cartIsChoosedLeft: false,
-                    cartIsChoosedRight: true
-                })
 
-               this._vote(this.pathToCarts, this.rightCartUID, 'inc')
-               if (this.state.cartIsChoosedLeft) {
-                   this._vote(this.pathToCarts, this.leftCartUID, 'dec')
-               }
-            
+
+        if (!this.state.cartIsChoosedRight) {
+            this.pickCart(e);
+            this.setState({
+                quantity2: this.state.quantity2 + 1,
+                quantity1: (this.state.cartIsChoosedLeft) ? this.state.quantity1 - 1 : this.state.quantity1,
+                cartIsChoosedLeft: false,
+                cartIsChoosedRight: true
+            })
+
+            this._vote(this.pathToCarts, this.rightCartUID, 'inc')
+            if (this.state.cartIsChoosedLeft) {
+                this._vote(this.pathToCarts, this.leftCartUID, 'dec')
+            }
+
         }
     }
     componentWillMount() {
@@ -177,19 +210,19 @@ class Cart extends React.Component {
         })
     }
 
-     
+
     render() {
         var {question, q1, q2, } = this.props.quiz
 
         var per1 = this.state.quantity1 * 100 / (this.state.quantity1 + this.state.quantity2)
-        var per2 = this.state.quantity2 * 100/ (this.state.quantity1 + this.state.quantity2)
+        var per2 = this.state.quantity2 * 100 / (this.state.quantity1 + this.state.quantity2)
 
 
         let leftCartClasses = cx('quiz-cart__questions-in', { animate: this.state.activeLeft })
         let rightCartClasses = cx('quiz-cart__questions-in ', { animate: this.state.activeRight })
 
-        cookie.save(`cartIsChoosed-${this.props.quiz.cartId}`, this.state.cartIsChoosedLeft ? `Left`: 
-        this.state.cartIsChoosedRight ? `Right`  : '',  { path: '/' })
+        cookie.save(`cartIsChoosed-${this.props.quiz.cartId}`, this.state.cartIsChoosedLeft ? `Left` :
+            this.state.cartIsChoosedRight ? `Right` : '', { path: '/' })
 
 
         return (<div className="quiz-cart ">
@@ -197,15 +230,20 @@ class Cart extends React.Component {
                 {question}
             </div>
             <div className="quiz-cart__questions ">
-                <div id="quiz-cart__questions-left" className={leftCartClasses} onClick={this.pickCart1} >
+                <div  className={`quiz-cart__questions-left ${leftCartClasses}`} onClick={this.pickCart1} ref={input => this.clickInputLeft = input}>
                     <span className='ink'></span>
-                    <div className={`quiz-cart__questions__inner ${ this.state.cartIsChoosedLeft ? 'is__picked' : this.state.cartIsChoosedRight ? 'is__show' : ''} `}>
-                        <div className="quiz-cart__questions__inner-score">
-                             <div className="quiz-cart__questions__inner-score__number__cover" >
-                                <span className="quiz-cart__questions__inner-score__number">{this.state.quantity1}</span>
-                                <span  className="quiz-cart__questions__inner-score__number__add"> votes</span>
+                    <div className={`quiz-cart__questions__inner ${this.state.cartIsChoosedLeft ? 'is__picked' : this.state.cartIsChoosedRight ? 'is__show' : ''} `}>
+                        <div className="quiz-cart__questions__inner-score" ref={node => (this.leftNode = node)}>
+                            <div className={`quiz-cart__questions__inner-choosed ${this.state.cartIsChoosedLeft ? 'is__active' : ''}`}>
+                                <svg width="30px" height="21px" viewBox="68 132 30 21" version="1.1" xmlns="http://www.w3.org/2000/svg" >
+                                    <path d="M69,141 L78,151 L97,133" stroke="#FFFFFF" strokeWidth="2" fill="none"></path>
+                                </svg>
                             </div>
-                            <div className="quiz-cart__questions__inner-score__progress" > <div className="progress" style={{'width':'0'}} ></div></div>
+                            <div className="quiz-cart__questions__inner-score__number__cover" >
+                                <span className="quiz-cart__questions__inner-score__number">{this.state.quantity1}</span>
+                                <span className="quiz-cart__questions__inner-score__number__add"> votes</span>
+                            </div>
+                            <div className="quiz-cart__questions__inner-score__progress" > <div className="progress" style={{ 'width': `${per1}%` }} ></div></div>
                             <div className="quiz-cart__questions__inner-score__pers__cover" ><div className="quiz-cart__questions__inner-score__pers" >{~~per1}</div> <span>%</span></div>
                         </div>
                         <div className='quiz-cart__questions__inner-value'>{q1.value}</div>
@@ -214,20 +252,26 @@ class Cart extends React.Component {
                     <div className='quiz-cart__questions__inner-value'>{q1.value}</div>
                 </div>
                 <div className="quiz-cart__questions-between "> </div>
-                <div id="quiz-cart__questions-right" className={rightCartClasses} onClick={this.pickCart2} >
+                <div className={`quiz-cart__questions-right ${rightCartClasses}`} onClick={this.pickCart2} ref={input => this.clickInputRight = input}>
                     <span className='ink'></span>
-                    <div className={`quiz-cart__questions__inner ${ this.state.cartIsChoosedRight ? 'is__picked' : this.state.cartIsChoosedLeft ? 'is__show' : ''} `}>
-                        <div className="quiz-cart__questions__inner-score">
+                    <div className={`quiz-cart__questions__inner ${this.state.cartIsChoosedRight ? 'is__picked' : this.state.cartIsChoosedLeft ? 'is__show' : ''} `}>
+                        <div className="quiz-cart__questions__inner-score" ref={node => (this.rightNode = node)}>
+                            <div className={`quiz-cart__questions__inner-choosed ${this.state.cartIsChoosedRight ? 'is__active' : ''}`}>
+                                <svg width="30px" height="21px" viewBox="68 132 30 21" version="1.1" xmlns="http://www.w3.org/2000/svg" >
+                                    <path d="M69,141 L78,151 L97,133" stroke="#FFFFFF" strokeWidth="2" fill="none"></path>
+                                </svg>
+                            </div>
                             <div className="quiz-cart__questions__inner-score__number__cover" >
                                 <span className="quiz-cart__questions__inner-score__number">{this.state.quantity2}</span>
-                                <span  className="quiz-cart__questions__inner-score__number__add"> votes</span>
-                            </div>                            <div className="quiz-cart__questions__inner-score__progress" > <div className="progress" style={{'width':'0'}} ></div></div>
+                                <span className="quiz-cart__questions__inner-score__number__add"> votes</span>
+                            </div>
+                            <div className="quiz-cart__questions__inner-score__progress" > <div className="progress" style={{ 'width': `${per2}%` }} ></div></div>
                             <div className="quiz-cart__questions__inner-score__pers__cover" ><div className="quiz-cart__questions__inner-score__pers" >{~~per2}</div> <span>%</span></div>
                         </div>
                         <div className='quiz-cart__questions__inner-value'>{q2.value}</div>
                     </div>
                     <img height="240" width="300" src={q2.srcImg} />
-                     <div className='quiz-cart__questions__inner-value'>{q2.value}</div>
+                    <div className='quiz-cart__questions__inner-value'>{q2.value}</div>
                 </div>
             </div>
             <div className="quiz-cart__social">

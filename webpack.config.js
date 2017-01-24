@@ -104,8 +104,8 @@ const config = {
         loaders: [
           'style-loader',
           `css-loader?${JSON.stringify({ sourceMap: isDebug, minimize: !isDebug })}`,
+          'sass-loader',
           'postcss-loader?pack=sass',
-          'sass-loader'
 
         ],
       },

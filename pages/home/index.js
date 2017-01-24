@@ -76,14 +76,29 @@ class HomePage extends React.Component {
   }
 
   animateOut(prev, next){
+    let diff = next - prev
     let prevNode = document.querySelector(`.slick-slide[data-index='${prev}']`)
     let allNde = document.querySelectorAll(`.slick-slide`)
-    setTimeout(()=>Array.from(allNde).map( node => removeClass(node, "prev")),0)
-    setTimeout(()=>addClass(prevNode, "prev"),0)
+
+    // if(diff>0){
+    //   let firstNode = document.querySelector(`.slick-slide[data-index='${next}']`) || document.querySelector(`.slick-slide[data-index='${(next)%next}']`)
+    //   let secondNode = document.querySelector(`.slick-slide[data-index='${next+1}']`) || document.querySelector(`.slick-slide[data-index='${(next+1)%next}']`)
+    //   let thirdNode = document.querySelector(`.slick-slide[data-index='${next+2}']`) || document.querySelector(`.slick-slide[data-index='${(next+2)%next}']`)
+    // }else{
+    //   let firstNode = document.querySelector(`.slick-slide[data-index='${next-1}']`) || document.querySelector(`.slick-slide[data-index='${(next-1)%next}']`)
+    //   let secondNode = document.querySelector(`.slick-slide[data-index='${next-2}']`) || document.querySelector(`.slick-slide[data-index='${(next-2)%next}']`)
+    //   let thirdNode = document.querySelector(`.slick-slide[data-index='${next-3}']`) || document.querySelector(`.slick-slide[data-index='${(next-3)%next}']`)
+    // }
+    // debugger;
+
+
+    setTimeout(()=>Array.from(allNde).map( node => removeClass(node, "prev|next")),0)
+    setTimeout(()=>addClass(prevNode, diff > 0 ? "next" : "prev"),0)
+    setTimeout(()=>Array.from(allNde).map( node => removeClass(node, "prev|next")),1000)
   }
   
 
-  componentDidMount() {
+  componentDidMount() {   
     document.title = title
   }
 
@@ -128,7 +143,7 @@ class HomePage extends React.Component {
       nextArrow: this.rigthArrow,
       prevArrow: this.leftArrow,
       beforeChange: this.animateOut,
-      speed: 1000
+      speed: 500 
     }
   
     return (
