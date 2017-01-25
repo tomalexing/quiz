@@ -18,7 +18,7 @@ class Header extends React.Component {
   componentDidMount() {
     window.componentHandler.upgradeElement(this.root);
 
-    var dialog = document.querySelector('dialog');
+    var dialog = document.querySelector('dialog#header');
         var showDialogButton = document.querySelector('#show-dialog');
     if (! dialog.showModal) {
       dialogPolyfill.registerDialog(dialog);
@@ -44,20 +44,7 @@ class Header extends React.Component {
             <img className="logo" src="./img/quiz-logo.png" /> 
           </Link>
           <div className="mdl-layout-spacer"></div>
-          <Login />
           <Button id={"show-dialog"} className="quiz-header__create"  > CREATE QUIZ </Button>
-                  <dialog className="mdl-dialog">
-                  <h4 className="mdl-dialog__title">Allow data collection?</h4>
-                  <div className="mdl-dialog__content">
-                    <p>
-                      Allowing us to collect data will let us get you the information you want faster.
-                    </p>
-                  </div>
-                  <div className="mdl-dialog__actions">
-                    <button type="button" className="mdl-button">Agree</button>
-                    <button type="button" className="mdl-button close">Disagree</button>
-                  </div>
-                </dialog>
         </div>
       </header>
 

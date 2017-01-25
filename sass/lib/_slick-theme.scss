@@ -40,19 +40,40 @@ $slick-opacity-not-active: 0.25 !default;
         left: auto;
         right: -25px;
     }
-
-}
-
-.slick-next {
-    right: -25px;
-    z-index: 111;
-    [dir="rtl"] & {
-        left: -25px;
-        right: auto;
+    &:hover{
+         box-shadow: 0 2px 20px rgba(0,0,0, .5);
     }
 
 }
 
+
+
+.slick-next {
+    right: -25px;
+    z-index: 111;
+   
+    [dir="rtl"] & {
+        left: -25px;
+        right: auto;
+    }
+    &:hover{
+         box-shadow: 0 2px 20px rgba(0,0,0, .5);
+    }
+
+}
+
+@media only screen and (max-width: 840px){
+
+
+    .slick-prev {
+
+        left: -80px;
+    }
+    .slick-next {
+
+        right: -80px;
+    }
+}
 /* Dots */
 
 // .slick-slider {
@@ -103,3 +124,4 @@ $slick-opacity-not-active: 0.25 !default;
 
 
 }
+

@@ -49,20 +49,20 @@ class Footer extends React.Component {
   onSubmit(e) {
     e.preventDefault();
     let email = document.querySelector('#subscribe')
-    if(EMAIL_RE.test(email.val)){
+    if(EMAIL_RE.test(email.value)){
       dbRef.once('value').then(snap => {
         let Emails = snap.val() || {}
         let id = generateID('email-')
         Emails[id] = email.value
         dbRef.set(Object.assign(Emails))
-
+        this.setState({emailNotRecognized: false})
         this.dialog.showModal();
         email.value = ""
 
       })
     }else{
         this.dialog.showModal();
-      this.setState({emailNotRecognized: true})
+        this.setState({emailNotRecognized: true})
     }
   }
 
@@ -70,28 +70,27 @@ class Footer extends React.Component {
     return (
       <footer className="mdl-mini-footer">
         <div className="mdl-mini-footer__left-section">
-          <div className="mdl-logo">© Company Name</div>
+          <div className="mdl-logo">© 2017 ION DIGITAL</div>
           <ul className="mdl-mini-footer__link-list">
-            <li><Link to="/privacy">Privacy &amp; Terms</Link></li>
-            <li><Link to="/not-found">Not Found</Link></li>
+            <span className="quiz-footer__devider" >·</span>
+            <li><Link to="/about">TERMS OF SERVICE</Link></li>
           </ul>
         </div>
         <div className="mdl-mini-footer__right-section">
           <form className="quiz-subscribe" onSubmit={this.onSubmit}>
-              <label className="quiz-subscribe__label" htmlFor="subscribe"> subscribe </label>
+              <label className="quiz-subscribe__label" htmlFor="subscribe"> subscribe: </label>
               <fieldset className="quiz-subscribe__cover__input">
                 <input id="subscribe" type="email" placeholder="Email" name="subscribe" />
                 <input type="submit" value="subscribe" />
               </fieldset>
           </form>
-          <dialog className="mdl-dialog" id="footer" ref={node => (this.root = node)}>
-            <h4 className="mdl-dialog__title">{
+          <dialog className="mdl-dialog" id="footer" ref={node => (this.root = node)}>{
               this.state.emailNotRecognized
               ?
-              <p>Denies</p>
+              <h4 className="mdl-dialog__title">Denied</h4>
               :
-              <p>Success!!!</p> 
-            }</h4>
+             <h4 className="mdl-dialog__title"> Success!!!</h4>
+            }
             <div className="mdl-dialog__content">{
               this.state.emailNotRecognized
               ?
@@ -103,6 +102,16 @@ class Footer extends React.Component {
               <button type="button" className="mdl-button close">Okey</button>
             </div>
           </dialog>
+                    <dialog id="header" className="mdl-dialog">
+                  <h4 className="mdl-dialog__title">Is Needed?</h4>
+                  <div className="mdl-dialog__content">
+                    <span> You can connect with us by email</span> <address>support@iondigi.com</address> <span> to share you vision of project or just subsribe and We'll consider such kind of functionallity.
+                    </span>
+                  </div>
+                  <div className="mdl-dialog__actions">
+                    <button type="button" className="mdl-button close">Close</button>
+                  </div>
+            </dialog>
         </div>
       </footer>
 

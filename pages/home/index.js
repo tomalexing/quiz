@@ -168,8 +168,8 @@ class HomePage extends React.Component {
               }</SS>
               :
               <div className="preloading__cart">
-                <img src={'./img/preview.png'}/>
-                  <span>downloading...</span>
+                  <p>Quiz Is Starting!!!</p>
+                  <p>Pick That You Like More</p>
               </div> 
             
           }

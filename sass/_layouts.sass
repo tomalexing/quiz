@@ -1,7 +1,10 @@
 $quiz-bg: #474E65
 
+
+
 .quiz-header
 	background: $quiz-bg
+	box-shadow: 0 2px 50px rgba(0,0,0,.5)
 	+r(1024)
 		display: flex
 	&__row
@@ -12,15 +15,24 @@ $quiz-bg: #474E65
 			padding: 0 16px
 			img
 				height: 50px
+		+r(375)
+			padding-right: 0px
 
 		.quiz-singin
 			color: white
 	&__create
+		+quiz-btn
 		margin-left: 10px
 		background-color: white
 		color: $quiz-bg
-		&:hover
-			color: white
+		font-weight: 600
+		margin-right: 0px
+		&:hover,
+		&:focus,
+		&:active
+			color: $quiz-bg 
+			background-color: white  !important
+			box-shadow: 0 2px 20px rgba(0,0,0,.6) !important
 
 .login
 	&-status
@@ -51,3 +63,4 @@ $quiz-bg: #474E65
 		border-radius: 3px
 		button
 			display: block
+			
