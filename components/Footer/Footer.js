@@ -30,10 +30,9 @@ class Footer extends React.Component {
 
   componentDidMount() {
     window.componentHandler.upgradeElement(this.root);
-
-    this.dialog = document.querySelector('dialog#footer');
-  
+    this.dialog = this.root;
     if (! this.dialog.showModal) {
+        console.log(dialogPolyfill)
       dialogPolyfill.registerDialog(this.dialog);
     }
 
@@ -101,17 +100,8 @@ class Footer extends React.Component {
             <div className="mdl-dialog__actions">
               <button type="button" className="mdl-button close">Okey</button>
             </div>
-          </dialog>
-                    <dialog id="header" className="mdl-dialog">
-                  <h4 className="mdl-dialog__title">Is Needed?</h4>
-                  <div className="mdl-dialog__content">
-                    <span> You can connect with us by email</span> <address>support@iondigi.com</address> <span> to share you vision of project or just subsribe and We'll consider such kind of functionallity.
-                    </span>
-                  </div>
-                  <div className="mdl-dialog__actions">
-                    <button type="button" className="mdl-button close">Close</button>
-                  </div>
-            </dialog>
+          </dialog >
+
         </div>
       </footer>
 

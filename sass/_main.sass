@@ -38,51 +38,53 @@ $quiz-red: #FC3868
 	.slick-slide
 		min-height: 444px
 		transform-style: preserve-3d
-
-	.slick-slide.next
-		transform-style: preserve-3d
-		transform-origin: center center
-		transform: translate3d(1000px, 0, 0) !important
-		opacity: 0 
-		transition: transform, 1s !important
-		z-index: 100 !important
-	.slick-slide.prev
-		transform-style: preserve-3d
-		transform-origin: center center
-		transform: translate3d(-1500px, 0, 0) !important
-		opacity: 0 
-		transition: transform, 1s !important
-		z-index: 100 !important
-	.slick-slide.slick-active 
-		opacity: 1 !important
-		transform: translate3d(0, 0,0) 
-		z-index: 10 
-		top: 0 !important
-	.slick-slide.slick-active + .slick-slide
-		opacity: 1 !important
-		transform: translate3d(0, -35px,0) scale(.9) 
-		z-index: 9  
-		top: 0 !important
+	+rmin(840)
+		.slick-slide.next
+			transform-style: preserve-3d
+			transform-origin: center center
+			transform: translate3d(1000px, 0, 0) !important
+			opacity: 0 
+			transition: transform, 1s !important
+			z-index: 100 !important
+		.slick-slide.prev
+			transform-style: preserve-3d
+			transform-origin: center center
+			transform: translate3d(-1500px, 0, 0) !important
+			opacity: 0 
+			transition: transform, 1s !important
+			z-index: 100 !important
+		.slick-slide.slick-active 
+			opacity: 1 !important
+			transform: translate3d(0, 0,0) 
+			z-index: 10 
+			top: 0 !important
+		.slick-slide.slick-active + .slick-slide
+			opacity: 1 !important
+			transform: translate3d(0, -35px,0) scale(.9) 
+			z-index: 9  
+			top: 0 !important
+			
+		.slick-slide.slick-active + .slick-slide + .slick-slide
+			opacity: 1 !important
+			transform: translate3d(0, -70px, 0) scale(.8) 
+			z-index: 8 
+			top: 0 !important
+			
+		.slick-slide.slick-active + .slick-slide + .slick-slide + .slick-slide
+			opacity: 1 !important
+			transform: translate(0, -105px) scale(.7) 
+			z-index: 7 !important
+			top: 0 !important
 		
-	.slick-slide.slick-active + .slick-slide + .slick-slide
-		opacity: 1 !important
-		transform: translate3d(0, -70px, 0) scale(.8) 
-		z-index: 8 
-		top: 0 !important
-		
-	.slick-slide.slick-active + .slick-slide + .slick-slide + .slick-slide
-		opacity: 1 !important
-		transform: translate(0, -105px) scale(.7) 
-		z-index: 7 !important
-		top: 0 !important
-	
 
 // CART
 .quiz
 	margin: auto
 	max-width: 100%
+	+r(1280)
+		margin: 50px 20px 50px
 	+r(840)
-		margin: 50px 80px
+		margin: 50px 20px 150px
 	&-cart
 		z-index: 100
 		position: relative
@@ -98,7 +100,7 @@ $quiz-red: #FC3868
 		font-size: 26px
 		color: white
 		background: #FC3868
-		font-weight: 100	
+		font-weight: 100
 	&-cart__questions
 		display: flex
 		flex-wrap: nowrap
@@ -299,11 +301,12 @@ $quiz-red: #FC3868
 			font-size: 18px
 			font-weight: 100
 			color: white !important
-			margin: 0 11px 0 15px
+			margin: 0 11px 0 20px
 			width: 160px
 			+tr(width .5s)
 			&:focus
 				width: 180px
+				opacity: .6
 			&::input-placeholder
 				color: rgba(255, 255, 255, .3)
 			&:focus::input-placeholder
@@ -328,6 +331,7 @@ $quiz-red: #FC3868
 			color: white
 			transition: box-shadow 0.5s
 			text-transform: uppercase
+			-webkit-appearance: none
 			&:hover
 				box-shadow: 0 2px 20px rgba(0,0,0,.5)  !important
 			
@@ -360,8 +364,10 @@ $quiz-red: #FC3868
 		padding: 0 10px
 		margin-left: 0px
 
+// Preloading
 .preloading__cart
 	text-align: center
+	max-width: 100%
 	width: 400px
 	margin: 0 auto
 	background: $quiz-red
@@ -390,12 +396,17 @@ dialog:not([open])
 		overflow: hidden
 		border-top-left-radius: 8px
 		border-top-right-radius: 8px
+	&__content
+		padding-bottom: 16px 
 	&__actions
-		padding: 8 px 24px
+		padding: 8px 24px 24px 
 	address
 		display: inline-block
-		border: 2px dashed #FC3868
+		color: #FC3868
 		padding: 4px
 		font-weight: 900
+		line-height: 1.4
+	span
+		line-height: 1.4
 	button
 		+quiz-btn

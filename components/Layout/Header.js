@@ -38,13 +38,23 @@ class Header extends React.Component {
 
   render() {
     return (
-      <header className={`mdl-layout__header quiz-header`} ref={node => (this.root = node)}>
+      <header className={`mdl-layout__header quiz-header`}>
         <div className={`mdl-layout__header-row quiz-header__row`}>
           <Link className={`mdl-layout-title quiz-header__logo`} to="/">
             <img className="logo" src="./img/quiz-logo.png" /> 
           </Link>
           <div className="mdl-layout-spacer"></div>
           <Button id={"show-dialog"} className="quiz-header__create"  > CREATE QUIZ </Button>
+              <dialog id="header" className="mdl-dialog"  ref={node => (this.root = node)}>
+                  <h4 className="mdl-dialog__title">Is Needed?</h4>
+                  <div className="mdl-dialog__content">
+                    <span> You can connect with us by email</span> <address>support@iondigi.com</address> <span> to share you vision of project or just subsribe and We'll consider such kind of functionallity.
+                    </span>
+                  </div>
+                  <div className="mdl-dialog__actions">
+                    <button type="button" className="mdl-button close">Close</button>
+                  </div>
+            </dialog>
         </div>
       </header>
 

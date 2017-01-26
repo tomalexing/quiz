@@ -143,6 +143,7 @@ class HomePage extends React.Component {
       nextArrow: this.rigthArrow,
       prevArrow: this.leftArrow,
       beforeChange: this.animateOut,
+      adaptiveHeight: true,
       speed: 500 
     }
   

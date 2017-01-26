@@ -230,7 +230,7 @@ class Cart extends React.Component {
                 {question}
             </div>
             <div className="quiz-cart__questions ">
-                <div  className={`quiz-cart__questions-left ${leftCartClasses}`} onClick={this.pickCart1} ref={input => this.clickInputLeft = input}>
+                <div  className={`quiz-cart__questions-left ${leftCartClasses}`} onTouchStart={this.pickCart1} onClick={this.pickCart1} ref={input => this.clickInputLeft = input}>
                     <span className='ink'></span>
                     <div className={`quiz-cart__questions__inner ${this.state.cartIsChoosedLeft ? 'is__picked' : this.state.cartIsChoosedRight ? 'is__show' : ''} `}>
                         <div className="quiz-cart__questions__inner-score" ref={node => (this.leftNode = node)}>
@@ -252,7 +252,7 @@ class Cart extends React.Component {
                     <div className='quiz-cart__questions__inner-value'>{q1.value}</div>
                 </div>
                 <div className="quiz-cart__questions-between "> </div>
-                <div className={`quiz-cart__questions-right ${rightCartClasses}`} onClick={this.pickCart2} ref={input => this.clickInputRight = input}>
+                <div className={`quiz-cart__questions-right ${rightCartClasses}`} onTouchStart={this.pickCart2} onClick={this.pickCart2} ref={input => this.clickInputRight = input}>
                     <span className='ink'></span>
                     <div className={`quiz-cart__questions__inner ${this.state.cartIsChoosedRight ? 'is__picked' : this.state.cartIsChoosedLeft ? 'is__show' : ''} `}>
                         <div className="quiz-cart__questions__inner-score" ref={node => (this.rightNode = node)}>
